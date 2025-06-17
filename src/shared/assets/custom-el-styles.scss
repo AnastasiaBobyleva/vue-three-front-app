@@ -1,0 +1,121 @@
+// import dark theme
+@use 'element-plus/theme-chalk/src/dark/css-vars.scss' as *;
+
+:root {
+  // --el-color-primary: #e59823;
+}
+
+body {
+  font-family: Inter, system-ui, Avenir, 'Helvetica Neue', Helvetica, 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+a {
+  color: var(--el-color-primary);
+}
+
+hr.solid {
+  border-top: 1px solid black;
+}
+
+div.separator {
+  border-bottom: 1px solid var(--el-border-color);
+  padding: 4px 0;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: var(--el-color-primary-light-9);
+  }
+}
+
+.el-upload-dragger {
+  border: 2px dashed var(--el-border-color);
+  .el-upload__text {
+    font-size: inherit;
+  }
+}
+
+.el-checkbox {
+  margin: 0;
+  .el-checkbox__label {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+}
+
+.el-popover {
+  opacity: 0.9;
+}
+
+.viewer-component {
+  background: rgba(255, 255, 255, 0.9); /** var(--color-background-soft) */
+  border-radius: var(--el-border-radius-base);
+  padding: 6px 10px;
+
+  .el-collapse {
+    border: none;
+  }
+  .el-collapse-item {
+    .el-collapse-item__wrap {
+      background: none;
+    }
+    button {
+      background: none;
+      font-size: var(--el-font-size-base); // --el-font-size-medium for large text
+      color: var(--el-text-color-regular);
+      .el-collapse-item__arrow {
+        color: var(--el-text-color-primary);
+      }
+    }
+
+    .el-collapse-item__header,
+    .el-collapse-item__wrap {
+      border-bottom: 0;
+    }
+
+    .el-collapse-item__content {
+      background: none;
+      padding-bottom: 0;
+    }
+  }
+
+  .el-table {
+    --el-table-bg-color: #ffffff00;
+    --el-table-tr-bg-color: #ffffff00;
+
+    .title-row {
+      --el-table-tr-bg-color: #aaaaaa22; /*var(--el-color-primary-light-9);*/
+    }
+  }
+}
+
+.el-loading-spinner {
+  .el-loading-text {
+    color: var(--el-text-color-primary); // var(--el-color-primary);
+  }
+  .path {
+    stroke: #e59823;
+  }
+}
+
+.el-image {
+  img {
+    user-drag: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+  }
+}
+
+.none-selectable-text {
+  -webkit-user-select: none; /* Safari */        
+-moz-user-select: none; /* Firefox */
+-ms-user-select: none; /* IE10+/Edge */
+user-select: none; /* Standard */
+}
