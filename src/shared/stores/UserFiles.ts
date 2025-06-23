@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 
 interface State {
-  data: Array<File>
+  files: Array<File>,
+  urlsData: Array<string>
 }
 
 const DEFAULT_MODELNAME = 'Model'
@@ -10,35 +11,36 @@ const DEFAULT_MODELNAME = 'Model'
 export const useUserFilesStore = defineStore('userFiles', {
   state: (): State => {
     return {
-      data: [] as Array<File>
+      files: [] as Array<File>,
+      urlsData: [] as Array<string>
     }
   },
   getters: {
     models(state): Array<File> {
-      return state.data
+      return state.files
     },
     model(state): File | undefined {
-      return state.data.at(0)
+      return state.files.at(0)
+    },
+    urls(state): Array<string> {
+      return state.urlsData;
     }
   },
   actions: {
     filename(index: number = 0): string {
-      return this.data.at(index)?.name ?? DEFAULT_MODELNAME
+      return this.files.at(index)?.name ?? DEFAULT_MODELNAME
     },
     addModel(modelData: File) {
-      this.data.push(modelData)
-    },
-    hasModel(modelData: File): boolean {
-      return this.getModel(modelData.name) !== undefined
+      this.files.push(modelData)
     },
     getModel(name: string): File | undefined {
-      return this.data.find((item) => item.name === name)
+      return this.files.find((item) => item.name === name)
     },
     setModels(modelsData: Array<File>) {
-      this.data = [...modelsData]
+      this.files = [...modelsData]
     },
-    modelName(index: number): string | undefined {
-      return this.data.at(index)?.name ?? DEFAULT_MODELNAME
+    addUrl(url: string) {
+      this.urls.push(url)
     }
   }
 })

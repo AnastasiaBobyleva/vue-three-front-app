@@ -1,26 +1,31 @@
 <script setup lang="ts">
-import { ref, type Ref, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { type Object3D } from 'three'
 import { type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'// 'three/addons/loaders/GLTFLoader.js'
+import { type ViewerElement, DataLoader, Viewer } from 'three-viewer'
 
-import HomeButton from '@/widgets/HomeButton.vue'
 import LoadingComponent from '@/widgets/LoadingComponent.vue'
-import LogoComponent from '@/widgets/LogoComponent.vue'
 import ItemListSidebar from '@/widgets/ItemListSidebar.vue'
 
+import LogoComponent from '@/shared/ui/LogoComponent.vue'
+import HomeButton from '@/shared/ui/HomeButton.vue'
 import { useUserFilesStore } from '@/shared/stores/UserFiles'
 import { processLoadingError, HttpError } from '@/shared/services/ErrorHandler'
 import { type ModelInfo } from '@/shared/types/ModelInfo'
 
-import { type ViewerElement, DataLoader, Viewer } from 'three-viewer'
+const DEFAULT_MODELNAME = 'Model'
 
 const router = useRouter()
 const userFilesStore = useUserFilesStore()
-const loading = ref(userFilesStore.models?.length > 0)
+const loading = ref(userFilesStore.models?.length > 0 || userFilesStore.urls.length > 0)
+const modelName = ref(DEFAULT_MODELNAME)
 
-const modelMetadata: Ref<Array<ModelInfo>> = ref([])
-const activeBodyID = '0'
+const waitPromise = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay))
+
+// Manage sidebar information
+// const modelMetadata: Ref<Array<ModelInfo>> = ref([])
+// const activeBodyID = '0'
 
 // Viewer
 const viewerElem = ref<ViewerElement | null>(null)
@@ -46,28 +51,38 @@ function onViewer3dCreated() {
   const promises: Array<Promise<any>> = []
   viewer = new Viewer('viewerElem')
 
-  if (userFilesStore.models?.length === 0) {
-    processModelFail('Model convertion failed.')
+  if (userFilesStore.models.length === 0 && userFilesStore.urls.length === 0) {
+    processModelFail('Oops. Seems that model loading failed.')
     return
+  } else {
+    loading.value = true
   }
 
-  const loader = new DataLoader()
-  userFilesStore.models.forEach((modelFile) => {
-    const fileUrl = URL.createObjectURL(modelFile)
-    modelMetadata.value
-    const loadingPromise = loader
-      .load(fileUrl)
+  let loadingProcess = (loader: DataLoader, fileURL: string, fileName?: string) => {
+    return loader
+      .load(fileURL)
       .then((model: GLTF) => {
-         model.scene.userData.name = modelFile.name
+         model.scene.userData.name = fileName ?? DEFAULT_MODELNAME
          viewer.showModel(model)
        })
       .catch((error) => {
         processModelFail(error)
       })
+  }
+
+  const loader = new DataLoader()
+  userFilesStore.models.forEach((modelFile) => {
+    modelName.value = modelFile.name
+    const fileURL = URL.createObjectURL(modelFile)
+    const loadingPromise = loadingProcess(loader, fileURL, modelFile.name)
+    promises.push(loadingPromise)
+  })
+  userFilesStore.urls.forEach((fileURL) => {
+    const loadingPromise = loadingProcess(loader, fileURL)
     promises.push(loadingPromise)
   })
 
-  Promise.all(promises).then(() => {
+  Promise.all([promises, waitPromise(1000)]).then(() => {
     loading.value = false
   })
 
@@ -86,35 +101,35 @@ function onViewer3dCreated() {
   <div v-if="loading">
     <LoadingComponent :modelName="userFilesStore.filename()"/>
   </div>
-    <el-container>
-      <el-header class="top-layout" height="36px">
-        <HomeButton/>
-      </el-header>
-      <div class="viewer-layout">
-        <div style="position: relative; width: 100%; height: 100%" class="item">
-          <viewer-element
-            ref="viewerElem"
-            id="viewerElem"
-            class="viewer-element"
-            viewHelper
-            backgroundColor="0xaaaaaa"
-            @created="onViewer3dCreated"
-          >
-            <div class="logo-layout">
-              <LogoComponent/>
-            </div>
-            <el-card v-if="hasViewerNotification" class="viewer-notification none-selectable-text">
-              {{ viewerNotificationContent }}
-            </el-card>
-          </viewer-element>
-        </div>
-        <el-scrollbar>
-          <div class="sidebar">
-          <ItemListSidebar :data="modelMetadata" :activeID="activeBodyID""/>
+  <el-container>
+    <el-header class="top-layout" height="36px">
+      <HomeButton/>
+    </el-header>
+    <div class="viewer-layout">
+      <div style="position: relative; width: 100%; height: 100%" class="item">
+        <viewer-element
+          ref="viewerElem"
+          id="viewerElem"
+          class="viewer-element"
+          viewHelper
+          backgroundColor="0xdddddd"
+          @created="onViewer3dCreated"
+        >
+          <div class="logo-layout">
+            <LogoComponent/>
           </div>
-        </el-scrollbar>
+          <el-card v-if="hasViewerNotification" class="viewer-notification none-selectable-text">
+            {{ viewerNotificationContent }}
+          </el-card>
+        </viewer-element>
       </div>
-    </el-container>
+      <el-scrollbar>
+        <div class="sidebar">
+        <!--<ItemListSidebar :data="modelMetadata" :activeID="activeBodyID""/>-->
+        </div>
+      </el-scrollbar>
+    </div>
+  </el-container>
 </template>
 
 <style scoped>

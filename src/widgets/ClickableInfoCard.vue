@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
 
 const props = defineProps({
   id: String,
@@ -9,20 +8,18 @@ const props = defineProps({
   opacity: String
 })
 
-const router = useRouter()
+const emit = defineEmits<{
+  (e: 'click'): void
+}>()
 
-// TODO Remove routing from bottom level component
-function onStartConfigure() {
-  router.push({
-    name: 'upload',
-    params: { type: props.id }
-  })
+function onClick() {
+  emit('click')
 }
 
 </script>
 <template>
   <div class="item">
-    <el-card shadow='hover' @click="onStartConfigure">
+    <el-card shadow='hover' @click="onClick">
       <el-image :src="image" :style="{'width': '125px', 'height': '125px', 'opacity': opacity}"></el-image>
       <h3>{{ title }}</h3>
       <div><slot name="text"></slot></div>

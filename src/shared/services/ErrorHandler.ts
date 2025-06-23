@@ -10,19 +10,7 @@ export class HttpError extends Error {
 }
 
 export function processLoadingError(router: Router, error: TypeError | HttpError) {
-  let errorCause = ''; 
-  if (error instanceof TypeError || error.status === 404) {
-    if (error.message.search('Failed to fetch') !== -1) {
-      errorCause = 'Oops! There are server connection problems. Please try a bit later.'
-    }
-  }
-  else if (error.status === 500) {
-      errorCause = 'The model inspection failed. Please try another model.'
-  } else {
-    errorCause = 'Cannot process model. ' + error
-  } 
-
-  return showMessage('Loading error', errorCause, router)
+  return showMessage('Loading error', '', router)
 }
 
 export function showMessage(messageTitle: string, message: string, router?: Router) {

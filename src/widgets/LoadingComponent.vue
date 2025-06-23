@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import HomeButton from '@/shared/ui/HomeButton.vue'
 
-import HomeButton from '@/widgets/HomeButton.vue'
 const props = defineProps({
   modelName: String,
   type: String

@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
 import type { UploadProps } from 'element-plus'
-import HomeButton from '@/widgets/HomeButton.vue'
 
+import HomeButton from '@/shared/ui/HomeButton.vue'
 import { useUserFilesStore } from '@/shared/stores/UserFiles'
 
-const route = useRoute()
-const type: string = route.params['type'].toString()
 
-const props = defineProps({
+defineProps({
   id: Number,
   fileList: String
 })
@@ -16,12 +13,9 @@ const emit = defineEmits<{
   (e: 'loading-start', modelName: string): void
 }>()
 const store = useUserFilesStore()
-/*const fileExtensions = computed(() => {
-  return props.fileList?.replaceAll('.', '').toUpperCase()
-})*/
+
 const handleChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
   store.setModels(uploadFiles.map((elem) => elem.raw as File))
-  // Start uploading here
   emit('loading-start', uploadFiles.at(0)?.name ?? 'Model')
 }
 </script>
@@ -30,9 +24,6 @@ const handleChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
   <div class="main-layout">
     <div class="header">
       <HomeButton></HomeButton>
-      <div>
-        <h3>{{ type }}</h3>
-      </div>
     </div>
     <br />
     <el-upload
@@ -47,7 +38,7 @@ const handleChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
       multiple
     >
       <div class="upload-text">
-        <div class="el-upload__text">Choose a part to be investigated</div>
+        <div class="el-upload__text">Choose a part to be uploaded</div>
         <div class="el-upload__text">Drop a .GLB file or <em>browse it on your PC.</em></div>
       </div>
     </el-upload>

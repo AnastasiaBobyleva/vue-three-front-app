@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import ProcessTypesView from '@/pages/ProcessTypesView.vue'
-import UploadView from '@/pages/UploadView.vue'
-import NotFoundView from '@/pages/NotFoundView.vue'
+import ProcessTypesView from '@/pages/choose-type/ProcessTypesView.vue'
+import UploadView from '@/pages/upload/UploadView.vue'
+import NotFoundView from '@/pages/not-found/NotFoundView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -12,7 +12,7 @@ const router = createRouter({
       component: ProcessTypesView
     },
     {
-      path: '/upload/:type',
+      path: '/upload',
       name: 'upload',
       component: UploadView
     },
@@ -22,7 +22,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (Viewer3D.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../../pages/Viewer.vue')
+      component: () => import('../../pages/viewer/Viewer.vue')
     },
     {
       path: '/:pathMatch(.*)*',
