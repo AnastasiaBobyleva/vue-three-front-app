@@ -92,15 +92,6 @@ div.separator {
   }
 }
 
-.el-loading-spinner {
-  .el-loading-text {
-    color: var(--el-text-color-primary); // var(--el-color-primary);
-  }
-  .path {
-    stroke: #e59823;
-  }
-}
-
 .el-image {
   img {
     user-drag: none;
@@ -114,7 +105,7 @@ div.separator {
 
 .none-selectable-text {
   -webkit-user-select: none; /* Safari */        
--moz-user-select: none; /* Firefox */
--ms-user-select: none; /* IE10+/Edge */
-user-select: none; /* Standard */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }

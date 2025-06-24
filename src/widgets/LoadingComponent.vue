@@ -62,7 +62,7 @@ const text =
 .loader::after {
   content: '';
   grid-area: 1/1;
-  background: #e59823;
+  background: var(--el-color-primary);
   clip-path: polygon(0 0, 101% 0, 0 100%);
   animation: l13 2s infinite;
 }
